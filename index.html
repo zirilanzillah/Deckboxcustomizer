@@ -287,7 +287,7 @@
             tempCtx.translate(position.x, position.y);
             tempCtx.rotate(rotation * Math.PI / 180);
             tempCtx.scale(scale, scale);
-            tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+            tempCtx.drawImage(image, -image.width / 2, 14, image.width, image.height);
 	    tempCtx.restore();
 		
             // Zeichne die Maske über das Bild
