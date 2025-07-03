@@ -185,7 +185,15 @@
 			ctx.restore();
 		
 		}
-
+		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset) {
+			tempCtx.save();
+			tempC.translate(position.x + offsetX, position.y + offsetY);
+			tempC.rotate((rotation + rotationOffset) * Math.PI / 180);
+			tempC.scale(scale * scaleFactor, scale * scaleFactor);
+			tempC.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+			tempC.restore();
+		
+		}
         // Event Listener
 
         // Datei-Upload
@@ -288,9 +296,9 @@
             tempCtx.rotate(rotation * Math.PI / 180);
             tempCtx.scale(scale, scale);
 	                tempCtx.clearRect(0, 0, canvas.width, 501);
-			drawSingleImage(0, 14, 1, 0);
+			drawSingleDLImage(0, 14, 1, 0);
 			tempCtx.clearRect(0, 501, canvas.width, canvas.height);
-			drawSingleImage(0, 501, 1, 0);
+			drawSingleDLImage(0, 501, 1, 0);
             //tempCtx.drawImage(image, -image.width / 2, 14, image.width, image.height);
 	    tempCtx.restore();
 		
