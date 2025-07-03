@@ -150,23 +150,41 @@
             if (!image) return;
 
             // Canvas leeren
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, 501);
 
+			drawSingleImage(0, 14, 1, 0);
+			
+			ctx.clearRect(0, 501, canvas.width, canvas.height);
+			
+			drawSingleImage(0, 501, 1, 0);
+
+			//ctx.clearRect(0, 503, canvas.width, canvas.height);
+			
             // Zustand des Canvas speichern (wichtig vor Transformationen)
-            ctx.save();
+            //ctx.save();
 
             // Transformationen anwenden (Verschieben, Drehen, Skalieren)
             // Die Reihenfolge ist wichtig!
-            ctx.translate(position.x, position.y); // Verschiebe den Nullpunkt in die Bildmitte
-            ctx.rotate(rotation * Math.PI / 180); // Rotiere um den neuen Nullpunkt (Umrechnung in Bogenmaß)
-            ctx.scale(scale, scale); // Skaliere vom neuen Nullpunkt aus
+            //ctx.translate(position.x, position.y); // Verschiebe den Nullpunkt in die Bildmitte
+            //ctx.rotate(rotation * Math.PI / 180); // Rotiere um den neuen Nullpunkt (Umrechnung in Bogenmaß)
+            //ctx.scale(scale, scale); // Skaliere vom neuen Nullpunkt aus
 
             // Das Bild wird zentriert auf dem transformierten Nullpunkt gezeichnet
-            ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+            //ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
 
             // Canvas-Zustand wiederherstellen (Transformationen rückgängig machen)
-            ctx.restore();
+            //ctx.restore();
         }
+		
+		function drawSingleImage(offsetX, offsetY, scaleFactor, rotationOffset) {
+			ctx.save();
+			ctx.translate(position.x + offsetX, position.y + offsetY);
+			ctx.rotate((rotation + rotationOffset) * Math.PI / 180);
+			ctx.scale(scale * scaleFactor, scale * scaleFactor);
+			ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+			ctx.restore();
+		
+		}
 
         // Event Listener
 
