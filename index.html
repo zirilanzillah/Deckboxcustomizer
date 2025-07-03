@@ -187,11 +187,11 @@
 		}
 		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset) {
 			tempCtx.save();
-			tempC.translate(position.x + offsetX, position.y + offsetY);
-			tempC.rotate((rotation + rotationOffset) * Math.PI / 180);
-			tempC.scale(scale * scaleFactor, scale * scaleFactor);
-			tempC.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
-			tempC.restore();
+			tempCtx.translate(position.x + offsetX, position.y + offsetY);
+			tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
+			tempCtx.scale(scale * scaleFactor, scale * scaleFactor);
+			tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+			tempCtx.restore();
 		
 		}
         // Event Listener
