@@ -293,10 +293,6 @@
 
 		
             // Zeichne das transformierte Bild auf den temporären Canvas
-            tempCtx.save();
-            tempCtx.translate(position.x, position.y);
-            tempCtx.rotate(rotation * Math.PI / 180);
-            tempCtx.scale(scale, scale);
 	                tempCtx.clearRect(0, 0, canvas.width, 501);
 			drawSingleDLImage(0, 14, 1, 0);
 			tempCtx.clearRect(0, 501, canvas.width, canvas.height);
