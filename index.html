@@ -183,17 +183,8 @@
 			ctx.scale(scale * scaleFactor, scale * scaleFactor);
 			ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
 			ctx.restore();
-		
 		}
-		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset) {
-			tempCtx.save();
-			tempCtx.translate(position.x + offsetX, position.y + offsetY);
-			tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
-			tempCtx.scale(scale * scaleFactor, scale * scaleFactor);
-			tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
-			tempCtx.restore();
-		
-		}
+
         // Event Listener
 
         // Datei-Upload
@@ -289,7 +280,18 @@
             tempCanvas.width = canvas.width;
             tempCanvas.height = canvas.height;
             const tempCtx = tempCanvas.getContext('2d');
+		
+		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset) {
+			tempCtx.save();
+			tempCtx.translate(position.x + offsetX, position.y + offsetY);
+			tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
+			tempCtx.scale(scale * scaleFactor, scale * scaleFactor);
+			tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+			tempCtx.restore();
+		
+		}
 
+		
             // Zeichne das transformierte Bild auf den temporären Canvas
             tempCtx.save();
             tempCtx.translate(position.x, position.y);
