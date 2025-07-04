@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deckbox selber basteln</title>
+    <title>Deckboxcustomizer</title>
     <style>
 
         body {
@@ -48,6 +48,16 @@
             pointer-events: none; 
         }
         
+        .manual {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #cccccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			display: inline-block;
+			margin-left: 10px;
+        }
+
         .controls {
             margin-top: 25px;
             padding: 20px;
@@ -55,6 +65,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 500px;
+			display: inline-block;
         }
 
         .controls > div {
@@ -107,6 +118,7 @@
         <img id="mask" src="mask.png" alt="Maske">
     </div>
 
+	<div style="display: flex; justify-content: space-between;" width="877">
     <div class="controls">
         <div>
             <input type="file" id="fileInput" accept="image/jpeg, image/png">
@@ -123,6 +135,50 @@
         </div>
         <button id="downloadBtn">Fertiges Bild herunterladen</button>
     </div>
+	<div class="manual">
+		<img id="myImage" src="Bilder/a.jpg" width="283" height="200">
+	</div>
+	</div>
+
+<script>
+	var images = [	"Bilder/a.jpg",
+					"Bilder/b.jpg",
+					"Bilder/c.jpg",
+					"Bilder/d.jpg",
+					"Bilder/e.jpg",
+					"Bilder/1.jpg",
+					"Bilder/2.jpg",
+					"Bilder/3.jpg",
+					"Bilder/4.jpg",
+					"Bilder/5.jpg",
+					"Bilder/6.jpg",
+					"Bilder/7.jpg",
+					"Bilder/8.jpg",
+					"Bilder/9.jpg",
+					"Bilder/10.jpg",
+					"Bilder/11.jpg",
+					"Bilder/12.jpg",
+					"Bilder/13.jpg",
+					"Bilder/14.jpg",
+					"Bilder/15.jpg",
+					"Bilder/16.jpg",
+					"Bilder/17.jpg",
+					"Bilder/18.jpg",
+					"Bilder/19.jpg",
+					"Bilder/20.jpg",
+					"Bilder/21.jpg",
+					"Bilder/22.jpg",
+					"Bilder/23.jpg"]; // Array mit Bildpfaden
+	var i = 0;
+	var img = document.getElementById("myImage");
+
+	function wechselBild() {
+		img.src = images[i];
+		i = (i + 1) % images.length; // Zählt durch das Array und beginnt von vorne
+	}
+
+	setInterval(wechselBild, 3000); // Wechselt das Bild alle 3 Sekunden
+</script>
 
     <script>
         // DOM-Elemente holen
