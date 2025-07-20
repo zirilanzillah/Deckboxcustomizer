@@ -337,70 +337,58 @@
             }
         });
 
-        // Download-Button
-        downloadBtn.addEventListener('click', () => {
-            if (!image) {
-                alert("Bitte laden Sie zuerst ein Bild hoch.");
-                return;
-            }
-			
-			maskImage.crossOrigin = 'anonymous';
-            // Erstelle einen temporären Canvas, um das finale Bild zu erzeugen
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = canvas.width;
-            tempCanvas.height = canvas.height;
-            const tempCtx = tempCanvas.getContext('2d');
-		
-		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset) {
+	// Download-Button
+	downloadBtn.addEventListener('click', () =>
+	{
+			if (!image)
+			{
+				alert("Bitte laden Sie zuerst ein Bild hoch.");
+				return;
+			}
+
+		maskImage.crossOrigin = 'anonymous';
+		// Erstelle einen temporären Canvas, um das finale Bild zu erzeugen
+		const tempCanvas = document.createElement('canvas');
+		tempCanvas.width = canvas.width;
+		tempCanvas.height = canvas.height;
+		const tempCtx = tempCanvas.getContext('2d');
+
+		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset)
+		{
 			tempCtx.save();
 			tempCtx.translate(position.x + offsetX, position.y + offsetY);
 			tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
 			tempCtx.scale(scale * scaleFactor, scale * scaleFactor);
 			tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
 			tempCtx.restore();
-		
 		}
 
-		
-            // Zeichne das transformierte Bild auf den temporären Canvas
-	                tempCtx.clearRect(0, 0, canvas.width, 501);
-			drawSingleDLImage(0, 14, 1, 0);
-			tempCtx.clearRect(0, 501, canvas.width, canvas.height);
-			drawSingleDLImage(0, 501, 1, 0);
-            //tempCtx.drawImage(image, -image.width / 2, 14, image.width, image.height);
-	    tempCtx.restore();
-		
-            // Zeichne die Maske über das Bild
-            // 'destination-in' sorgt dafür, dass nur der Teil des Bildes erhalten bleibt,
-            // wo die Maske undurchsichtig ist. Falsch, wir brauchen den transparenten Teil.
-            // Der einfachere Weg: Wir zeichnen die Maske einfach darüber.
-            // Das setzt voraus, dass der relevante Bereich der Maske transparent ist.
-            //tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
+		// Zeichne das transformierte Bild auf den temporären Canvas
+		tempCtx.clearRect(0, 0, canvas.width, 501);
+		drawSingleDLImage(0, 14, 1, 0);
+		tempCtx.clearRect(0, 501, canvas.width, canvas.height);
+		drawSingleDLImage(0, 501, 1, 0);
+		tempCtx.restore();
 
-            // Erstelle einen Download-Link
-            //const link = document.createElement('a');
-            //link.download = 'fertiges-bild.png'; // Dateiname
-            //link.href = tempCanvas.toDataURL('image/png'); // Konvertiere Canvas zu einem Bild-Datenstrom
-            //link.click(); // Simuliere einen Klick auf den Link
-			
-            maskImage.onload = function() {
-				tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
+		maskImage.onload = function()
+		{
+			tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
+			// Erstelle einen Download-Link
+			const link = document.createElement('a');
+			link.download = 'fertiges-bild.png'; // Dateiname
+			link.href = tempCanvas.toDataURL('image/png'); // Konvertiere Canvas zu einem Bild-Datenstrom
+			link.click(); // Simuliere einen Klick auf den Link
+		};
 
-				// Erstelle einen Download-Link
-				const link = document.createElement('a');
-				link.download = 'fertiges-bild.png'; // Dateiname
-				link.href = tempCanvas.toDataURL('image/png'); // Konvertiere Canvas zu einem Bild-Datenstrom
-				link.click(); // Simuliere einen Klick auf den Link
-            };
+		maskImage.onerror = function()
+		{
+			console.error("Error loading mask image. Please check CORS settings.");
+		};
 
-            maskImage.onerror = function() {
-				console.error("Error loading mask image. Please check CORS settings.");
-            };
+		// Set the image source (assuming maskImage is an HTMLImageElement)
+		maskImage.src = 'mask.png';
+	});
 
-            // Set the image source (assuming maskImage is an HTMLImageElement)
-            maskImage.src = 'mask.png';
-        });
-
-    </script>
+	</script>
 </body>
 </html>
