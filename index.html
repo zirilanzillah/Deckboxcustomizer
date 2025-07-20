@@ -1,140 +1,152 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deckboxcustomizer</title>
-    <style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Deckboxcustomizer</title>
+	<style>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #292a33;
-            color: #1c1e21;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 20px;
-        }
+		body
+		{
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			background-color: #292a33;
+			color: #1c1e21;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin: 20px;
+		}
 
-        #editor-container {
-            position: relative; /* Wichtig für die Positionierung der .png Maske */
-            width: 877px;
-            height: 620px;
-            border: 2px dashed #cccccc;
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+		#editor-container
+		{
+			position: relative; /* Wichtig für die Positionierung der .png Maske */
+			width: 877px;
+			height: 620px;
+			border: 2px dashed #cccccc;
+			background-color: #ffffff;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
 
-        /* Der Canvas, auf dem das Bild gezeichnet wird */
-        #imageCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            cursor: move; /* Zeigt an, dass das Bild beweglich ist */
-        }
+		/* Der Canvas, auf dem das Bild gezeichnet wird */
+		#imageCanvas
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			cursor: move; /* Zeigt an, dass das Bild beweglich ist */
+		}
 
-        /* Die .png Maske, die über dem Canvas liegt */
-        #mask {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            /* Lässt Mausklicks "durchfallen", damit der Canvas darunter bedienbar bleibt */
-            pointer-events: none; 
-        }
-        
-        .manual {
-            margin-top: 25px;
-            padding: 20px;
-            background-color: #cccccc;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		/* Die .png Maske, die über dem Canvas liegt */
+		#mask
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 10;
+			/* Lässt Mausklicks "durchfallen", damit der Canvas darunter bedienbar bleibt */
+			pointer-events: none; 
+		}
+
+		.manual 
+		{
+			margin-top: 25px;
+			padding: 20px;
+			background-color: #cccccc;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 			display: inline-block;
 			margin-left: 10px;
-        }
+		}
 
-        .controls {
-            margin-top: 25px;
-            padding: 20px;
-            background-color: #cccccc;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 500px;
+		.controls 
+		{
+			margin-top: 25px;
+			padding: 20px;
+			background-color: #cccccc;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			width: 500px;
 			display: inline-block;
-        }
+		}
 
-        .controls > div {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .controls label {
-            min-width: 80px;
-        }
+		.controls > div 
+		{
+			margin-bottom: 15px;
+			display: flex;
+			align-items: center;
+		}
 
-        .controls input[type="range"] {
-            width: 100%;
-            margin-left: 10px;
-        }
-        
-        /* Styling für Buttons */
-        button, input[type="file"] {
-            font-size: 16px;
-            padding: 10px 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s;
-        }
-        
-        button#downloadBtn {
-            background-color: #1877f2;
-            color: white;
-            border: none;
-            width: 100%;
-            margin-top: 10px;
-        }
+		.controls label 
+		{
+			min-width: 80px;
+		}
 
-        button#downloadBtn:hover {
-            background-color: #166fe5;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+		.controls input[type="range"] 
+		{
+			width: 100%;
+			margin-left: 10px;
+		}
 
-        #fileInput {
-             width: calc(100% - 32px); /* Volle Breite minus padding */
-        }
-    </style>
+		/* Styling für Buttons */
+		button, input[type="file"] 
+		{
+			font-size: 16px;
+			padding: 10px 15px;
+			border-radius: 6px;
+			border: 1px solid #ccc;
+			cursor: pointer;
+			transition: background-color 0.2s, box-shadow 0.2s;
+		}
+
+		button#downloadBtn 
+		{
+			background-color: #1877f2;
+			color: white;
+			border: none;
+			width: 100%;
+			margin-top: 10px;
+		}
+
+		button#downloadBtn:hover 
+		{
+			background-color: #166fe5;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		#fileInput {
+			width: calc(100% - 32px); /* Volle Breite minus padding */
+		}
+	</style>
 </head>
 <body>
 
-    <div id="editor-container">
-        <canvas id="imageCanvas" width="877" height="620"></canvas>
-        <img id="mask" src="mask.png" alt="Maske">
-    </div>
+	<div id="editor-container">
+		<canvas id="imageCanvas" width="877" height="620"></canvas>
+		<img id="mask" src="mask.png" alt="Maske">
+	</div>
 
 	<div style="display: flex; justify-content: space-between;" width="877">
-    <div class="controls">
-        <div>
-            <input type="file" id="fileInput" accept="image/jpeg, image/png">
-        </div>
-        <div>
-            <label for="scaleSlider">Skalieren:</label>
-            <input type="range" id="scaleSlider" min="0.1" max="3" step="0.01" value="1">
-            <input type="number" id="scaleNumber" min="0.1" max="3" step="0.01" value="1">
-        </div>
-        <div>
-            <label for="rotationSlider">Drehen (°):</label>
-            <input type="range" id="rotationSlider" min="-180" max="180" step="1" value="0">
-            <input type="number" id="rotationNumber" min="-180" max="180" step="1" value="0">
-        </div>
-        <button id="downloadBtn">Fertiges Bild herunterladen</button>
-    </div>
+	<div class="controls">
+		<div>
+			<input type="file" id="fileInput" accept="image/jpeg, image/png">
+		</div>
+		<div>
+			<label for="scaleSlider">Skalieren:</label>
+			<input type="range" id="scaleSlider" min="0.1" max="3" step="0.01" value="1">
+			<input type="number" id="scaleNumber" min="0.1" max="3" step="0.01" value="1">
+		</div>
+		<div>
+			<label for="rotationSlider">Drehen (°):</label>
+			<input type="range" id="rotationSlider" min="-180" max="180" step="1" value="0">
+			<input type="number" id="rotationNumber" min="-180" max="180" step="1" value="0">
+		</div>
+		<button id="downloadBtn">Fertiges Bild herunterladen</button>
+	</div>
 	<div class="manual">
 		<img id="myImage" src="Bilder/a.jpg" width="283" height="200">
 	</div>
@@ -157,7 +169,7 @@
 					"Bilder/5.jpg",
 					"Bilder/6.jpg",
 					"Bilder/7.jpg",
-		      			"Bilder/l1.jpg",
+					"Bilder/l1.jpg",
 					"Bilder/l2.jpg",
 					"Bilder/l3.jpg",
 					"Bilder/l4.jpg",
@@ -194,201 +206,195 @@
 	setInterval(wechselBild, 3000); // Wechselt das Bild alle 3 Sekunden
 </script>
 
-    <script>
-        // DOM-Elemente holen
-        const canvas = document.getElementById('imageCanvas');
-        const ctx = canvas.getContext('2d');
-        const fileInput = document.getElementById('fileInput');
-        const scaleSlider = document.getElementById('scaleSlider');
-        const rotationSlider = document.getElementById('rotationSlider');
-        const scaleNumber = document.getElementById('scaleNumber');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const maskImage = document.getElementById('mask');
+<script>
+	// DOM-Elemente holen
+	const canvas = document.getElementById('imageCanvas');
+	const ctx = canvas.getContext('2d');
+	const fileInput = document.getElementById('fileInput');
+	const scaleSlider = document.getElementById('scaleSlider');
+	const rotationSlider = document.getElementById('rotationSlider');
+	const scaleNumber = document.getElementById('scaleNumber');
+	const downloadBtn = document.getElementById('downloadBtn');
+	const maskImage = document.getElementById('mask');
 
-        // Zustandvariablen für das Bild
-        let image = null; // Das geladene Bild-Objekt
-        let scale = 1;
-        let rotation = 0; // in Grad
-        let position = { x: canvas.width / 2, y: canvas.height / 2 };
+	// Zustandvariablen für das Bild
+	let image = null; // Das geladene Bild-Objekt
+	let scale = 1;
+	let rotation = 0; // in Grad
+	let position = { x: canvas.width / 2, y: canvas.height / 2 };
 
-        // Variablen für das Dragging des Bildes
-        let isDragging = false;
-        let dragStart = { x: 0, y: 0 };
+	// Variablen für das Dragging des Bildes
+	let isDragging = false;
+	let dragStart = { x: 0, y: 0 };
 
-        // Hauptfunktion zum Zeichnen des Bildes auf dem Canvas
-        function drawImage() {
-            if (!image) return;
-
-            // Canvas leeren
-            ctx.clearRect(0, 0, canvas.width, 501);
-
-			drawSingleImage(0, 14, 1, 0);
-			
-			ctx.clearRect(0, 501, canvas.width, canvas.height);
-			
-			drawSingleImage(0, 501, 1, 0);
-
-			//ctx.clearRect(0, 503, canvas.width, canvas.height);
-			
-            // Zustand des Canvas speichern (wichtig vor Transformationen)
-            //ctx.save();
-
-            // Transformationen anwenden (Verschieben, Drehen, Skalieren)
-            // Die Reihenfolge ist wichtig!
-            //ctx.translate(position.x, position.y); // Verschiebe den Nullpunkt in die Bildmitte
-            //ctx.rotate(rotation * Math.PI / 180); // Rotiere um den neuen Nullpunkt (Umrechnung in Bogenmaß)
-            //ctx.scale(scale, scale); // Skaliere vom neuen Nullpunkt aus
-
-            // Das Bild wird zentriert auf dem transformierten Nullpunkt gezeichnet
-            //ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
-
-            // Canvas-Zustand wiederherstellen (Transformationen rückgängig machen)
-            //ctx.restore();
-        }
-		
-		function drawSingleImage(offsetX, offsetY, scaleFactor, rotationOffset) {
-			ctx.save();
-			ctx.translate(position.x + offsetX, position.y + offsetY);
-			ctx.rotate((rotation + rotationOffset) * Math.PI / 180);
-			ctx.scale(scale * scaleFactor, scale * scaleFactor);
-			ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
-			ctx.restore();
-		}
-
-        // Event Listener
-
-        // Datei-Upload
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                image = new Image();
-                image.onload = () => {
-                    // Bildzustand zurücksetzen und neu zeichnen
-                    position = { x: canvas.width / 2, y: canvas.height / 2 };
-                    scale = 1;
-                    rotation = 0;
-                    scaleSlider.value = 1;
-                    scaleNumber.value = 1;
-                    rotationSlider.value = 0;
-                    rotationNumber.value = 0;
-                    drawImage();
-                };
-                image.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Skalierungs-Slider
-        scaleSlider.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            scale = val;
-            scaleNumber.value = val;
-            drawImage();
-        });
-
-		// Skalierung über einen Zahlenwert (optional)
-        scaleNumber.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            scale = val;
-            scaleSlider.value = val;
-            drawImage();
-        });
-
-        // Rotations-Slider
-        rotationSlider.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            rotation = val;
-            rotationNumber.value = val;
-            drawImage();
-        });
-
-		// Roation über einen Zahlenwert -180, -90, 0, 90, 180 etc.
-        rotationNumber.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            rotation = val;
-            rotationSlider.value = val;
-            drawImage();
-        });
-
-        // Maus-Events für das Verschieben des Bildes
-        canvas.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            // Startposition des Cursors relativ zum Canvas
-            dragStart.x = e.offsetX - position.x;
-            dragStart.y = e.offsetY - position.y;
-        });
-
-        canvas.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-        
-        canvas.addEventListener('mouseleave', () => {
-            isDragging = false;
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                position.x = e.offsetX - dragStart.x;
-                position.y = e.offsetY - dragStart.y;
-                drawImage();
-            }
-        });
-
-	// Download-Button
-	downloadBtn.addEventListener('click', () =>
+	// Hauptfunktion zum Zeichnen des Bildes auf dem Canvas
+	function drawImage() 
 	{
-			if (!image)
+		if (!image) return;
+
+		// Canvas leeren
+		ctx.clearRect(0, 0, canvas.width, 501);
+		drawSingleImage(0, 14, 1, 0);
+		ctx.clearRect(0, 501, canvas.width, canvas.height);
+		drawSingleImage(0, 501, 1, 0);
+	}
+
+	function drawSingleImage(offsetX, offsetY, scaleFactor, rotationOffset) 
+	{
+		ctx.save();
+		ctx.translate(position.x + offsetX, position.y + offsetY);
+		ctx.rotate((rotation + rotationOffset) * Math.PI / 180);
+		ctx.scale(scale * scaleFactor, scale * scaleFactor);
+		ctx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+		ctx.restore();
+	}
+
+	// Event Listener
+
+	// Datei-Upload
+	fileInput.addEventListener('change', (e) =>
+	{
+		const file = e.target.files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = (event) =>
+		{
+		image = new Image();
+			image.onload = () =>
 			{
-				alert("Bitte laden Sie zuerst ein Bild hoch.");
-				return;
-			}
-
-		maskImage.crossOrigin = 'anonymous';
-		// Erstelle einen temporären Canvas, um das finale Bild zu erzeugen
-		const tempCanvas = document.createElement('canvas');
-		tempCanvas.width = canvas.width;
-		tempCanvas.height = canvas.height;
-		const tempCtx = tempCanvas.getContext('2d');
-
-		function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset)
-		{
-			tempCtx.save();
-			tempCtx.translate(position.x + offsetX, position.y + offsetY);
-			tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
-			tempCtx.scale(scale * scaleFactor, scale * scaleFactor);
-			tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
-			tempCtx.restore();
-		}
-
-		// Zeichne das transformierte Bild auf den temporären Canvas
-		tempCtx.clearRect(0, 0, canvas.width, 501);
-		drawSingleDLImage(0, 14, 1, 0);
-		tempCtx.clearRect(0, 501, canvas.width, canvas.height);
-		drawSingleDLImage(0, 501, 1, 0);
-		tempCtx.restore();
-
-		maskImage.onload = function()
-		{
-			tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
-			// Erstelle einen Download-Link
-			const link = document.createElement('a');
-			link.download = 'fertiges-bild.png'; // Dateiname
-			link.href = tempCanvas.toDataURL('image/png'); // Konvertiere Canvas zu einem Bild-Datenstrom
-			link.click(); // Simuliere einen Klick auf den Link
+				// Bildzustand zurücksetzen und neu zeichnen
+				position = { x: canvas.width / 2, y: canvas.height / 2 };
+				scale = 1;
+				rotation = 0;
+				scaleSlider.value = 1;
+				scaleNumber.value = 1;
+				rotationSlider.value = 0;
+				rotationNumber.value = 0;
+				drawImage();
+			};
+			image.src = event.target.result;
 		};
-
-		maskImage.onerror = function()
-		{
-			console.error("Error loading mask image. Please check CORS settings.");
-		};
-
-		// Set the image source (assuming maskImage is an HTMLImageElement)
-		maskImage.src = 'mask.png';
+		reader.readAsDataURL(file);
 	});
 
-	</script>
+	// Skalierungs-Slider
+	scaleSlider.addEventListener('input', (e) =>
+	{
+		const val = parseFloat(e.target.value);
+		scale = val;
+		scaleNumber.value = val;
+		drawImage();
+	});
+
+	// Skalierung über einen Zahlenwert (optional)
+	scaleNumber.addEventListener('input', (e) =>
+	{
+		const val = parseFloat(e.target.value);
+		scale = val;
+		scaleSlider.value = val;
+		drawImage();
+	});
+
+	// Rotations-Slider
+	rotationSlider.addEventListener('input', (e) =>
+	{
+		const val = parseInt(e.target.value);
+		rotation = val;
+		rotationNumber.value = val;
+		drawImage();
+	});
+
+	// Roation über einen Zahlenwert -180, -90, 0, 90, 180 etc.
+	rotationNumber.addEventListener('input', (e) =>
+	{
+		const val = parseInt(e.target.value);
+		rotation = val;
+		rotationSlider.value = val;
+		drawImage();
+	});
+
+	// Maus-Events für das Verschieben des Bildes
+	canvas.addEventListener('mousedown', (e) =>
+	{
+		isDragging = true;
+		// Startposition des Cursors relativ zum Canvas
+		dragStart.x = e.offsetX - position.x;
+		dragStart.y = e.offsetY - position.y;
+	});
+
+		canvas.addEventListener('mouseup', () =>
+		{
+			isDragging = false;
+		});
+
+	canvas.addEventListener('mouseleave', () =>
+	{
+		isDragging = false;
+	});
+
+	canvas.addEventListener('mousemove', (e) =>
+	{
+		if (isDragging) 
+		{
+			position.x = e.offsetX - dragStart.x;
+			position.y = e.offsetY - dragStart.y;
+			drawImage();
+		}
+	});
+
+// Download-Button
+downloadBtn.addEventListener('click', () =>
+{
+		if (!image)
+		{
+			alert("Bitte laden Sie zuerst ein Bild hoch.");
+			return;
+		}
+
+	maskImage.crossOrigin = 'anonymous';
+	// Erstelle einen temporären Canvas, um das finale Bild zu erzeugen
+	const tempCanvas = document.createElement('canvas');
+	tempCanvas.width = canvas.width;
+	tempCanvas.height = canvas.height;
+	const tempCtx = tempCanvas.getContext('2d');
+
+	function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset)
+	{
+		tempCtx.save();
+		tempCtx.translate(position.x + offsetX, position.y + offsetY);
+		tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
+		tempCtx.scale(scale * scaleFactor, scale * scaleFactor);
+		tempCtx.drawImage(image, -image.width / 2, -image.height / 2, image.width, image.height);
+		tempCtx.restore();
+	}
+
+	// Zeichne das transformierte Bild auf den temporären Canvas
+	tempCtx.clearRect(0, 0, canvas.width, 501);
+	drawSingleDLImage(0, 14, 1, 0);
+	tempCtx.clearRect(0, 501, canvas.width, canvas.height);
+	drawSingleDLImage(0, 501, 1, 0);
+	tempCtx.restore();
+
+	maskImage.onload = function()
+	{
+		tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
+		// Erstelle einen Download-Link
+		const link = document.createElement('a');
+		link.download = 'fertiges-bild.png'; // Dateiname
+		link.href = tempCanvas.toDataURL('image/png'); // Konvertiere Canvas zu einem Bild-Datenstrom
+		link.click(); // Simuliere einen Klick auf den Link
+	};
+
+	maskImage.onerror = function()
+	{
+		console.error("Error loading mask image. Please check CORS settings.");
+	};
+
+	// Set the image source (assuming maskImage is an HTMLImageElement)
+	maskImage.src = 'mask.png';
+});
+
+</script>
 </body>
 </html>
