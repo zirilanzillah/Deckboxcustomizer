@@ -146,7 +146,7 @@
 			<input type="range" id="rotationSlider" min="-180" max="180" step="1" value="0">
 			<input type="number" id="rotationNumber" min="-180" max="180" step="1" value="0">
 		</div>
-		<button id="downloadBtn">Fertiges Bild herunterladen</button>
+		<button id="downloadBtn">Fertiges Bild als PDF herunterladen</button>
 	</div>
 	<div class="manual">
 		<img id="myImage" src="Bilder/a.jpg" width="283" height="200">
@@ -407,7 +407,8 @@ downloadBtn.addEventListener('click', () =>
 	};
 
 	// Fehlerbehandlung, falls die Maske nicht geladen werden kann
-	maskImage.onerror = function() {
+	maskImage.onerror = function()
+	{
 		console.error("Maskenbild konnte nicht geladen werden.");
 		alert("Fehler: Das Maskenbild konnte nicht geladen werden. PDF kann nicht erstellt werden.");
 	};
