@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Deckboxcustomizer</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 	<style>
 
 		body
@@ -344,23 +345,24 @@
 	});
 
 // Download-Button
-downloadBtn.addEventListener('click', () =>
+downloadBtn.addEventListener('click', () => 
 {
-		if (!image)
-		{
-			alert("Bitte laden Sie zuerst ein Bild hoch.");
-			return;
+	if (!image) {
+		alert("Bitte laden Sie zuerst ein Bild hoch.");
+		return;
 		}
 
-	maskImage.crossOrigin = 'anonymous';
-	// Erstelle einen temporären Canvas, um das finale Bild zu erzeugen
+	// Hol die jsPDF-Klasse aus dem globalen window-Objekt
+	const { jsPDF } = window.jspdf;
+
+	// Erstelle einen temporären Canvas, um das finale Bild (Bild + Maske) zu erzeugen
 	const tempCanvas = document.createElement('canvas');
 	tempCanvas.width = canvas.width;
 	tempCanvas.height = canvas.height;
 	const tempCtx = tempCanvas.getContext('2d');
 
-	function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset)
-	{
+	// Helferfunktion, um das bearbeitete Bild zu zeichnen
+	function drawSingleDLImage(offsetX, offsetY, scaleFactor, rotationOffset) {
 		tempCtx.save();
 		tempCtx.translate(position.x + offsetX, position.y + offsetY);
 		tempCtx.rotate((rotation + rotationOffset) * Math.PI / 180);
@@ -370,29 +372,49 @@ downloadBtn.addEventListener('click', () =>
 	}
 
 	// Zeichne das transformierte Bild auf den temporären Canvas
-	tempCtx.clearRect(0, 0, canvas.width, 501);
 	drawSingleDLImage(0, 14, 1, 0);
-	tempCtx.clearRect(0, 501, canvas.width, canvas.height);
 	drawSingleDLImage(0, 501, 1, 0);
-	tempCtx.restore();
 
+	// Wichtig: Die Maske muss geladen sein, bevor das PDF erstellt wird.
+	// Das Laden wird hier neu ausgelöst, um sicherzustellen, dass es funktioniert.
 	maskImage.onload = function()
 	{
+		// 1. Maske über das Bild auf dem temporären Canvas zeichnen
 		tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
-		// Erstelle einen Download-Link
-		const link = document.createElement('a');
-		link.download = 'fertiges-bild.png'; // Dateiname
-		link.href = tempCanvas.toDataURL('image/png'); // Konvertiere Canvas zu einem Bild-Datenstrom
-		link.click(); // Simuliere einen Klick auf den Link
+
+		// 2. Die Bilddaten vom kombinierten Canvas als Daten-URL holen
+		const imageData = tempCanvas.toDataURL('image/png');
+
+		// 3. Eine neue jsPDF-Instanz erstellen
+		// Format: A4, Ausrichtung: Querformat ('l' für landscape)
+		const doc = new jsPDF({
+			orientation: 'l',
+			unit: 'mm',
+			format: 'a4'
+		});
+
+		// 4. Die Abmessungen der A4-Seite im Querformat (in mm)
+		const pageWidth = 297;
+		const pageHeight = 210;
+
+		// 5. Das Bild zum PDF hinzufügen.
+		// Die Koordinaten (0, 0) und die Seitenabmessungen sorgen dafür,
+		// dass das Bild die komplette Seite randlos ausfüllt.
+		doc.addImage(imageData, 'PNG', 0, 0, pageWidth, pageHeight);
+
+		// 6. PDF-Datei generieren und den Download starten
+		doc.save('deckbox-design.pdf');
 	};
 
-	maskImage.onerror = function()
-	{
-		console.error("Error loading mask image. Please check CORS settings.");
+	// Fehlerbehandlung, falls die Maske nicht geladen werden kann
+	maskImage.onerror = function() {
+		console.error("Maskenbild konnte nicht geladen werden.");
+		alert("Fehler: Das Maskenbild konnte nicht geladen werden. PDF kann nicht erstellt werden.");
 	};
 
-	// Set the image source (assuming maskImage is an HTMLImageElement)
-	maskImage.src = 'mask.png';
+	// Setze die Quelle des Maskenbildes erneut, um den onload-Handler auszulösen.
+	// Ein Timestamp verhindert Caching-Probleme.
+	maskImage.src = 'mask.png?t=' + new Date().getTime();
 });
 
 </script>
