@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Deckboxcustomizer</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<style>
+
+		body
+		{
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			background-color: #292a33;
+			color: #1c1e21;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin: 20px;
+		}
+
+		#editor-container
+		{
+			position: relative; /* Wichtig für die Positionierung der .png Maske */
+			width: 877px;
+			height: 620px;
+			border: 2px dashed #cccccc;
+			background-color: #ffffff;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		}
+
+		/* Der Canvas, auf dem das Bild gezeichnet wird */
+		#imageCanvas
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			cursor: move; /* Zeigt an, dass das Bild beweglich ist */
+		}
+
+		/* Die .png Maske, die über dem Canvas liegt */
+		#mask
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 10;
+			/* Lässt Mausklicks "durchfallen", damit der Canvas darunter bedienbar bleibt */
+			pointer-events: none; 
+		}
+
+		.manual 
+		{
+			margin-top: 25px;
+			padding: 20px;
+			background-color: #cccccc;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			display: inline-block;
+			margin-left: 10px;
+		}
+
+		.controls 
+		{
+			margin-top: 25px;
+			padding: 20px;
+			background-color: #cccccc;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			width: 500px;
+			display: inline-block;
+		}
+
+		.controls > div 
+		{
+			margin-bottom: 15px;
+			display: flex;
+			align-items: center;
+		}
+
+		.controls label 
+		{
+			min-width: 80px;
+		}
+
+		.controls input[type="range"] 
+		{
+			width: 100%;
+			margin-left: 10px;
+		}
+
+		/* Styling für Buttons */
+		button, input[type="file"] 
+		{
+			font-size: 16px;
+			padding: 10px 15px;
+			border-radius: 6px;
+			border: 1px solid #ccc;
+			cursor: pointer;
+			transition: background-color 0.2s, box-shadow 0.2s;
+		}
+
+		button#downloadBtn 
+		{
+			background-color: #1877f2;
+			color: white;
+			border: none;
+			width: 100%;
+			margin-top: 10px;
+		}
+
+		button#downloadBtn:hover 
+		{
+			background-color: #166fe5;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		}
+
+		#fileInput {
+			width: calc(100% - 32px); /* volle Breite minus padding */
+		}
+	</style>
+</head>
+<body>
+
+	<div id="editor-container">
+		<canvas id="imageCanvas" width="877" height="620"></canvas>
+		<img id="mask" src="mask.png" alt="Maske">
+	</div>
+
+	<div style="display: flex; justify-content: space-between;" width="877">
+	<div class="controls">
+		<div>
+			<input type="file" id="fileInput" accept="image/jpeg, image/png">
+		</div>
+		<div>
+			<label for="scaleSlider">Skalieren:</label>
+			<input type="range" id="scaleSlider" min="0.1" max="3" step="0.01" value="1">
+			<input type="number" id="scaleNumber" min="0.1" max="3" step="0.01" value="1">
+		</div>
+		<div>
+			<label for="rotationSlider">Drehen (°):</label>
+			<input type="range" id="rotationSlider" min="-180" max="180" step="1" value="0">
+			<input type="number" id="rotationNumber" min="-180" max="180" step="1" value="0">
+		</div>
+		<button id="downloadBtn">Fertiges Bild als PDF herunterladen</button>
+	</div>
+	<div class="manual">
+		<img id="myImage" src="Bilder/a.jpg" width="283" height="200">
+	</div>
+	</div>
+
+<script>
+	var images = [	"Bilder/a.jpg",
+					"Bilder/b.jpg",
+					"Bilder/c.jpg",
+					"Bilder/d1.jpg",
+					"Bilder/d2.jpg",
+					"Bilder/d3.jpg",
+					"Bilder/d4.jpg",
+					"Bilder/d5.jpg",
+					"Bilder/e.jpg",
+					"Bilder/l1.jpg",
+					"Bilder/l2.jpg",
+					"Bilder/l3.jpg",
+					"Bilder/l4.jpg",
+					"Bilder/l5.jpg",
+					"Bilder/l6.jpg",
+					"Bilder/l7.jpg",
+					"Bilder/l8.jpg",
+					"Bilder/l9.jpg",
+					"Bilder/l10.jpg",
+					"Bilder/8.jpg",
+					"Bilder/9.jpg",
+					"Bilder/10.jpg",
+					"Bilder/11.jpg",
+					"Bilder/12.jpg",
+					"Bilder/13.jpg",
+					"Bilder/14.jpg",
+					"Bilder/15.jpg",
+					"Bilder/16.jpg",
+					"Bilder/17.jpg",
+					"Bilder/18.jpg",
+					"Bilder/19.jpg",
+					"Bilder/20.jpg",
+					"Bilder/21.jpg",
+					"Bilder/22.jpg",
+					"Bilder/23.jpg"]; // Array mit Bildpfaden
+	var i = 0;
+	var img = document.getElementById("myImage");
+
+	function wechselBild() {
+		img.src = images[i];
+		i = (i + 1) % images.length; // Zählt durch das Array und beginnt von vorne
+	}
+
+	setInterval(wechselBild, 3000); // Wechselt das Bild alle 3 Sekunden
+</script>
+
+<script>
+// DOM-Elemente holen
+	const canvas = document.getElementById('imageCanvas');
+	const ctx = canvas.getContext('2d');
+	const fileInput = document.getElementById('fileInput');
+	const scaleSlider = document.getElementById('scaleSlider');
+	const rotationSlider = document.getElementById('rotationSlider');
+	const scaleNumber = document.getElementById('scaleNumber');
+	const downloadBtn = document.getElementById('downloadBtn');
+	const maskImage = document.getElementById('mask');
+
+	// Zustandvariablen für das Bild
+	let image = null; 
+	let scale = 1;
+	let rotation = 0; 
+	let position = { x: canvas.width / 2, y: canvas.height / 2 };
+
+	let isDragging = false;
+	let dragStart = { x: 0, y: 0 };
+
+	// Hauptfunktion zum Zeichnen
+	function drawImage() {
+		if (!image) return;
+
+		// Canvas leeren
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		// Bereich 1 (Oberer Teil bis 501px)
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(0, 0, canvas.width, 501);
+		ctx.clip(); // Begrenzt das Zeichnen auf diesen Bereich
+		drawTiledImage(ctx, 0, 14, 1, 0);
+		ctx.restore();
+
+		// Bereich 2 (Unterer Teil ab 501px)
+		ctx.save();
+		ctx.beginPath();
+		ctx.rect(0, 501, canvas.width, canvas.height - 501);
+		ctx.clip();
+		drawTiledImage(ctx, 0, 501, 1, 0);
+		ctx.restore();
+	}
+
+	/**
+	 * Kernfunktion: Erstellt ein sich wiederholendes Muster (Tiling)
+	 */
+	function drawTiledImage(targetCtx, offsetX, offsetY, scaleFactor, rotationOffset) {
+		// 1. Pattern erstellen
+		const pattern = targetCtx.createPattern(image, 'repeat');
+
+		// 2. Matrix für das Pattern berechnen
+		// Wir nutzen eine Matrix, um das gesamte "Endlos-Muster" zu schieben, zu drehen und zu skalieren
+		const matrix = new DOMMatrix();
+		
+		// Verschiebung
+		matrix.translateSelf(position.x + offsetX, position.y + offsetY);
+		// Drehung
+		matrix.rotateSelf(rotation + rotationOffset);
+		// Skalierung
+		const s = scale * scaleFactor;
+		matrix.scaleSelf(s, s);
+		// Zentrierung: Damit das Bild um seine Mitte rotiert/skaliert
+		matrix.translateSelf(-image.width / 2, -image.height / 2);
+
+		// Matrix auf das Pattern anwenden
+		pattern.setTransform(matrix);
+
+		// 3. Mit dem Pattern füllen
+		targetCtx.fillStyle = pattern;
+		targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+
+	// --- Event Listener (unverändert, rufen drawImage auf) ---
+
+	fileInput.addEventListener('change', (e) => {
+		const file = e.target.files[0];
+		if (!file) return;
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			image = new Image();
+			image.onload = () => {
+				position = { x: canvas.width / 2, y: canvas.height / 2 };
+				scale = 1;
+				rotation = 0;
+				scaleSlider.value = 1;
+				scaleNumber.value = 1;
+				rotationSlider.value = 0;
+				rotationNumber.value = 0;
+				drawImage();
+			};
+			image.src = event.target.result;
+		};
+		reader.readAsDataURL(file);
+	});
+
+	scaleSlider.addEventListener('input', (e) => {
+		scale = parseFloat(e.target.value);
+		scaleNumber.value = scale;
+		drawImage();
+	});
+
+	scaleNumber.addEventListener('input', (e) => {
+		scale = parseFloat(e.target.value);
+		scaleSlider.value = scale;
+		drawImage();
+	});
+
+	rotationSlider.addEventListener('input', (e) => {
+		rotation = parseInt(e.target.value);
+		rotationNumber.value = rotation;
+		drawImage();
+	});
+
+	rotationNumber.addEventListener('input', (e) => {
+		rotation = parseInt(e.target.value);
+		rotationSlider.value = rotation;
+		drawImage();
+	});
+
+	canvas.addEventListener('mousedown', (e) => {
+		isDragging = true;
+		dragStart.x = e.offsetX - position.x;
+		dragStart.y = e.offsetY - position.y;
+	});
+
+	canvas.addEventListener('mouseup', () => isDragging = false);
+	canvas.addEventListener('mouseleave', () => isDragging = false);
+	canvas.addEventListener('mousemove', (e) => {
+		if (isDragging) {
+			position.x = e.offsetX - dragStart.x;
+			position.y = e.offsetY - dragStart.y;
+			drawImage();
+		}
+	});
+
+	// --- PDF Download Logik ---
+	downloadBtn.addEventListener('click', () => {
+		if (!image) {
+			alert("Bitte laden Sie zuerst ein Bild hoch.");
+			return;
+		}
+
+		const { jsPDF } = window.jspdf;
+		const tempCanvas = document.createElement('canvas');
+		tempCanvas.width = canvas.width;
+		tempCanvas.height = canvas.height;
+		const tempCtx = tempCanvas.getContext('2d');
+
+		// Zeichne gekacheltes Bild auf Temp-Canvas
+		// Bereich 1
+		tempCtx.save();
+		tempCtx.beginPath();
+		tempCtx.rect(0, 0, tempCanvas.width, 501);
+		tempCtx.clip();
+		drawTiledImage(tempCtx, 0, 14, 1, 0);
+		tempCtx.restore();
+
+		// Bereich 2
+		tempCtx.save();
+		tempCtx.beginPath();
+		tempCtx.rect(0, 501, tempCanvas.width, tempCanvas.height - 501);
+		tempCtx.clip();
+		drawTiledImage(tempCtx, 0, 501, 1, 0);
+		tempCtx.restore();
+
+		maskImage.onload = function() {
+			tempCtx.drawImage(maskImage, 0, 0, tempCanvas.width, tempCanvas.height);
+			const imageData = tempCanvas.toDataURL('image/png');
+			const doc = new jsPDF({ orientation: 'l', unit: 'mm', format: 'a4' });
+			doc.addImage(imageData, 'PNG', 0, 0, 297, 210);
+			doc.save('deckbox-design.pdf');
+		};
+
+		maskImage.src = 'mask.png?t=' + new Date().getTime();
+	});
+
+</script>
+</body>
+</html>
